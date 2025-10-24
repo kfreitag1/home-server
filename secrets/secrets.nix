@@ -1,5 +1,5 @@
 let
-  server = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICdb0EyybJh7+yBm/YVE54Nra8Xo72XQKbduBsMx3v5k root@nixos";
+  server = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEG2TpITPEazCINcPbeY6zndBWAoZRNSfRD9rhWI96iu kieran@nixos";
   laptop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICQzXCHZhk/rHUSLI8+E5lNM3O1ZoZWUjyOPZG7Ivb5u kieran@Mac-2.lan";
   allKeys = [ server laptop ];
 in
