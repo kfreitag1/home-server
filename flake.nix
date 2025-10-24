@@ -77,6 +77,7 @@
         system = "x86_64_linux";
         modules = [
           ./hardware-configuration.nix
+          ./homeserver-hardware.nix
           ./docker.nix
           ./agenix-import.nix
           configuration
