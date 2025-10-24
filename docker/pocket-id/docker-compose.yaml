@@ -1,0 +1,28 @@
+services:
+  pocket-id:
+    container_name: pocket-id
+    image: ghcr.io/pocket-id/pocket-id:v1
+    restart: always
+    # ports:
+    #   - 1411:1411
+    volumes:
+      - "./data:/app/data"
+      - /run/agenix/maxmind-license-key:/run/secrets/maxmind-license-key:ro
+    environment:
+      - APP_URL=https://id.kfreitag.ca
+      - TRUST_PROXY=false
+      - PUID=1000
+      - PGID=1000
+      - MAXMIND_LICENCE_KEY_FILE=
+    # Optional healthcheck
+    healthcheck:
+      test: [ "CMD", "/app/pocket-id", "healthcheck" ]
+      interval: 1m30s
+      timeout: 5s
+      retries: 2
+      start_period: 10s
+    networks: 
+      - caddy_network
+networks:
+  caddy_network:
+    external: true

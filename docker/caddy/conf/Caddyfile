@@ -1,0 +1,16 @@
+{
+	email kfreitag@kieran.ca
+}
+
+testhabits.kfreitag.ca {
+	reverse_proxy beaverhabits:8080
+}
+
+id.kfreitag.ca {
+	reverse_proxy pocket-id:1411
+}
+
+budget.kfreitag.ca {
+	encode gzip zstd
+	reverse_proxy actual-budget:5006
+}
