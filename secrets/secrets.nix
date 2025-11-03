@@ -6,5 +6,5 @@ in
 {
   "cloudflare-api-key.age".publicKeys = allKeys;
   "maxmind-license-key.age".publicKeys = allKeys;
-  "actual-budget-oidc-secret.age".publicKeys = allKeys;
+  "actual-budget-oidc-client-secret.age".publicKeys = allKeys;
 }

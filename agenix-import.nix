@@ -15,5 +15,8 @@ let
   };
 in
 {
-  age.secrets = lib.genAttrs secretNames mkSecret;
+  age = {
+    secrets = lib.genAttrs secretNames mkSecret;
+    identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  };
 }
