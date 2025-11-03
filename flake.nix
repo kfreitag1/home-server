@@ -22,6 +22,34 @@
         boot.loader.efi.canTouchEfiVariables = true;
         boot.kernelPackages = pkgs.linuxPackages_latest;
 
+        # File system
+        fileSystems = {
+          # Adding new drive
+          # Drive infos:  $ lsblk -f
+          # Format drive: $ sudo mkfs.ext4 -L dataX /dev/XXX
+
+          "/mnt/disk1" = {
+            device = "/dev/disk/by-uuid/f2061751-479b-4703-a93e-13db54ff5713";
+            fsType = "ext4";
+            options = [ "defaults" "nofail" ];
+          };
+          "/mnt/storage" = {
+            device = "/mnt/disk*";
+            fsType = "fuse.mergerfs";
+            options = [
+              "defaults"
+              "allow_other"
+              "use_ino"
+              "cache.files=partial"
+              "dropcacheonclose=true"
+              "category.create=mfs"
+              "fsname=mergerfs"
+              "nofail"
+            ];
+          };
+        };
+        # TODO: Get a parity drive and set up SnapRAID
+
         # Networking
         networking.hostName = "homeserver";
         networking.networkmanager.enable = true;
@@ -45,6 +73,8 @@
 
         # Sys packages
         environment.systemPackages = with pkgs; [
+          mergerfs
+          mergerfs-tools
           git
           agenix.packages.${system}.default
           (pkgs.writeShellScriptBin "caddy-reload" ''
