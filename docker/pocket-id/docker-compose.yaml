@@ -3,17 +3,18 @@ services:
     container_name: pocket-id
     image: ghcr.io/pocket-id/pocket-id:v1
     restart: always
-    # ports:
-    #   - 1411:1411
     volumes:
       - "./data:/app/data"
       - /run/agenix/maxmind-license-key:/run/secrets/maxmind-license-key:ro
     environment:
       - APP_URL=https://id.kfreitag.ca
-      - TRUST_PROXY=false
+      - TRUST_PROXY=true
       - PUID=1000
       - PGID=1000
-      - MAXMIND_LICENCE_KEY_FILE=
+      - MAXMIND_LICENCE_KEY_FILE=/run/secrets/maxmind-license-key
+      - APP_NAME=Rhodhouse ID
+      - SESSION_DURATION=2880 # 2 days
+      - ACCENT_COLOR=#A2B6A1
     # Optional healthcheck
     healthcheck:
       test: [ "CMD", "/app/pocket-id", "healthcheck" ]
