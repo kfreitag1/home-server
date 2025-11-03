@@ -1,0 +1,47 @@
+services:
+  booklore:
+    image: booklore/booklore:latest
+    container_name: booklore
+    environment:
+      - TZ=America/Vancouver
+      - DATABASE_URL=jdbc:mariadb://booklore-mariadb:3306/booklore
+      - DATABASE_USERNAME=booklore
+      - BOOKLORE_PORT=6060
+    entrypoint: ["/entrypoint.sh"]
+    command: ["/start.sh"]
+    depends_on:
+      booklore-mariadb:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+      - /mnt/storage/media/books:/books
+      - /run/agenix/booklore-db-password:/run/secrets/booklore-db-password:ro
+      - ./entrypoint.sh:/entrypoint.sh:ro
+    restart: always
+    networks:
+    - default
+    - caddy_network
+
+  booklore-mariadb:
+    image: lscr.io/linuxserver/mariadb:11.4.5
+    container_name: booklore-mariadb
+    environment:
+      - TZ=America/Vancouver
+      - FILE__MYSQL_ROOT_PASSWORD=/run/secrets/booklore-db-password
+      - MYSQL_DATABASE=booklore
+      - MYSQL_USER=booklore
+      - FILE__MYSQL_PASSWORD=/run/secrets/booklore-db-password
+    volumes:
+      - ./mariadb/config:/config
+      - /run/agenix/booklore-db-password:/run/secrets/booklore-db-password:ro
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mariadb-admin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+networks:
+  caddy_network:
+    external: true
+

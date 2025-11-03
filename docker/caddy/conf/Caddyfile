@@ -14,3 +14,7 @@ budget.kfreitag.ca {
 	encode gzip zstd
 	reverse_proxy actual-budget:5006
 }
+
+library.kfreitag.ca {
+	reverse_proxy booklore:6060
+}
