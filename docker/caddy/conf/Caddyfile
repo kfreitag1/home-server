@@ -18,3 +18,7 @@ budget.kfreitag.ca {
 library.kfreitag.ca {
 	reverse_proxy booklore:6060
 }
+
+watch.kfreitag.ca {
+	reverse_proxy jellyfin:8096
+}
