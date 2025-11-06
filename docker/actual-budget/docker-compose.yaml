@@ -26,6 +26,9 @@ services:
         export ACTUAL_OPENID_CLIENT_SECRET=$$(cat /run/secrets/actual-budget-oidc-client-secret)
         && exec node app.js
         '
+    labels:
+      caddy: budget.kfreitag.ca
+      caddy.reverse_proxy: "{{upstreams 5006}}"
 networks:
   caddy_network:
     external: true

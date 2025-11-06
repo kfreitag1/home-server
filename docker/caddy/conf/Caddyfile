@@ -22,3 +22,65 @@ library.kfreitag.ca {
 watch.kfreitag.ca {
 	reverse_proxy jellyfin:8096
 }
+
+// # OAuth2 Proxy for authentication
+// auth.kfreitag.ca {
+// 	reverse_proxy oauth2-proxy:4180
+// }
+
+// # Arr services - protected by OAuth2 Proxy
+// sonarr.kfreitag.ca {
+// 	forward_auth oauth2-proxy:4180 {
+// 		uri /oauth2/auth
+// 		copy_headers X-Auth-Request-User X-Auth-Request-Email X-Auth-Request-Preferred-Username
+// 	}
+// 	reverse_proxy sonarr:8989
+// }
+
+// prowlarr.kfreitag.ca {
+// 	forward_auth oauth2-proxy:4180 {
+// 		uri /oauth2/auth
+// 		copy_headers X-Auth-Request-User X-Auth-Request-Email X-Auth-Request-Preferred-Username
+// 	}
+// 	reverse_proxy prowlarr:9696
+// }
+
+// radarr.kfreitag.ca {
+// 	forward_auth oauth2-proxy:4180 {
+// 		uri /oauth2/auth
+// 		copy_headers X-Auth-Request-User X-Auth-Request-Email X-Auth-Request-Preferred-Username
+// 	}
+// 	reverse_proxy radarr:7878
+// }
+
+// lidarr.kfreitag.ca {
+// 	forward_auth oauth2-proxy:4180 {
+// 		uri /oauth2/auth
+// 		copy_headers X-Auth-Request-User X-Auth-Request-Email X-Auth-Request-Preferred-Username
+// 	}
+// 	reverse_proxy lidarr:8686
+// }
+
+// requests.kfreitag.ca {
+// 	forward_auth oauth2-proxy:4180 {
+// 		uri /oauth2/auth
+// 		copy_headers X-Auth-Request-User X-Auth-Request-Email X-Auth-Request-Preferred-Username
+// 	}
+// 	reverse_proxy jellyseerr:5055
+// }
+
+// bazarr.kfreitag.ca {
+// 	forward_auth oauth2-proxy:4180 {
+// 		uri /oauth2/auth
+// 		copy_headers X-Auth-Request-User X-Auth-Request-Email X-Auth-Request-Preferred-Username
+// 	}
+// 	reverse_proxy bazarr:6767
+// }
+
+// sabnzbd.kfreitag.ca {
+// 	forward_auth oauth2-proxy:4180 {
+// 		uri /oauth2/auth
+// 		copy_headers X-Auth-Request-User X-Auth-Request-Email X-Auth-Request-Preferred-Username
+// 	}
+// 	reverse_proxy sabnzbd:8080
+// }

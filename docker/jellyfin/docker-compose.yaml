@@ -7,7 +7,7 @@ services:
     #   - 8096:8096/tcp
     #   - 7359:7359/udp
     volumes:
-      - ./config:/config
+      - ./jellyfin/config:/config
       # - /path/to/cache:/cache
       - type: bind
         source: /mnt/storage/media
@@ -19,10 +19,27 @@ services:
       #   target: /usr/local/share/fonts/custom
       #   read_only: true
     restart: 'always'
+    labels:
+      caddy: watch.kfreitag.ca
+      caddy.reverse_proxy: "{{upstreams 8096}}"
     networks:
       - caddy_network
     # environment:
     #   - JELLYFIN_PublishedServerUrl=https://watch.kfreitag.ca
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:preview-OIDC
+    container_name: jellyseerr
+    environment:
+      - TZ=America/Vancouver
+    volumes:
+      - ./jellyseerr/config:/app/config
+    restart: always
+    labels:
+      caddy: request.kfreitag.ca
+      caddy.reverse_proxy: "{{upstreams 5055}}"
+    networks:
+      - caddy_network
 
 networks:
   caddy_network:
