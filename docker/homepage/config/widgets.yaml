@@ -1,0 +1,15 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/info-widgets/
+
+- resources:
+    cpu: true
+    memory: true
+    disk: /
+    cputemp: true
+    tempmin: 0
+    tempmax: 100
+    units: 'metric'
+
+- resources:
+    disk: /mnt/storage

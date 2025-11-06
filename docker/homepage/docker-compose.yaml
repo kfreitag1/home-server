@@ -1,0 +1,21 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - /mnt/storage:/mnt/storage:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: home.kfreitag.ca
+    labels:
+      caddy: home.kfreitag.ca
+      caddy.reverse_proxy: "{{upstreams 3000}}"
+      caddy.import: tinyauth_forwarder *
+    networks:
+      - caddy_network
+
+networks:
+  caddy_network:
+    external: true

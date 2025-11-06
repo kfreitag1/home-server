@@ -22,6 +22,10 @@ services:
     labels:
       caddy: watch.kfreitag.ca
       caddy.reverse_proxy: "{{upstreams 8096}}"
+      homepage.group: Media
+      homepage.name: Jellyfin
+      homepage.href: watch.kfreitag.ca
+
     networks:
       - caddy_network
     # environment:

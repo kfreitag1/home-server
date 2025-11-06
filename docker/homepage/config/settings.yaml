@@ -1,0 +1,7 @@
+logpath: /app/logs
+headerStyle: clean
+statusStyle: "dot"
+title: Rhodhouse Server
+color: neutral
+theme: dark
+hideVersion: true
