@@ -50,6 +50,69 @@
         };
         # TODO: Get a parity drive and set up SnapRAID
 
+        # Network storage
+        services.samba = {
+          enable = true;
+          openFirewall = true;
+
+          settings = {
+            global = {
+              "workgroup" = "WORKGROUP";
+              "server string" = "rhodhouse-server";
+              "netbios name" = "rhodhouse-server";
+              "security" = "user";
+
+              "vfs objects" = "fruit streams_xattr";
+              "fruit:metadata" = "stream";
+              "fruit:model" = "MacSamba";
+              "fruit:posix_rename" = "yes";
+              "fruit:veto_appledouble" = "no";
+              "fruit:wipe_intentionally_left_blank_rfork" = "yes";
+              "fruit:delete_empty_adfiles" = "yes";
+            };
+            
+            storage = {
+              "path" = "/mnt/storage";
+              "browseable" = "yes";
+              "read only" = "no";
+              "guest ok" = "no";
+              "valid users" = "kieran";
+              "create mask" = "0644";
+              "directory mask" = "0755";
+            };
+            
+            timemachine = {
+              "path" = "/mnt/storage/timemachine";
+              "browseable" = "yes";
+              "read only" = "no";
+              "guest ok" = "no";
+              "valid users" = "kieran";
+              "fruit:time machine" = "yes";
+              "vfs objects" = "catia fruit streams_xattr";
+            };
+          };
+        };
+
+        services.samba-wsdd = {
+          enable = true;
+          openFirewall = true;
+        };
+
+        services.avahi = {
+          enable = true;
+          nssmdns4 = true;
+          publish = {
+            enable = true;
+            userServices = true;
+          };
+        };
+
+        # Tailscale
+        services.tailscale = {
+          enable = true;
+          openFirewall = true;
+        };
+
         # Networking
         networking.hostName = "homeserver";
         networking.networkmanager.enable = true;
