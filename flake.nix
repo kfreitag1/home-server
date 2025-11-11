@@ -33,6 +33,13 @@
             fsType = "ext4";
             options = [ "defaults" "nofail" ];
           };
+
+          "/mnt/backup" = {
+            device = "/dev/disk/by-uuid/9f22ca6a-7bd5-478f-90f2-cfbd123bdc75";
+            fsType = "ext4";
+            options = [ "defaults" "nofail" ];
+          };
+
           "/mnt/storage" = {
             device = "/mnt/disk*";
             fsType = "fuse.mergerfs";
@@ -70,9 +77,19 @@
               "fruit:wipe_intentionally_left_blank_rfork" = "yes";
               "fruit:delete_empty_adfiles" = "yes";
             };
+
+            all = {
+              "path" = "/mnt/storage";
+              "browseable" = "yes";
+              "read only" = "no";
+              "guest ok" = "no";
+              "valid users" = "kieran";
+              "create mask" = "0644";
+              "directory mask" = "0755";
+            }; 
             
             storage = {
-              "path" = "/mnt/storage";
+              "path" = "/mnt/storage/storage";
               "browseable" = "yes";
               "read only" = "no";
               "guest ok" = "no";
@@ -175,6 +192,7 @@
           ./homeserver-hardware.nix
           ./docker.nix
           ./agenix-import.nix
+          ./backup.nix
           configuration
           agenix.nixosModules.default
         ];
