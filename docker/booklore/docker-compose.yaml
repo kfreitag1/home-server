@@ -14,6 +14,7 @@ services:
         condition: service_healthy
     volumes:
       - ./data:/app/data
+      - /mnt/storage/media/bookdrop:/bookdrop
       - /mnt/storage/media/books:/books
       - /run/agenix/booklore-db-password:/run/secrets/booklore-db-password:ro
       - ./entrypoint.sh:/entrypoint.sh:ro
@@ -21,6 +22,21 @@ services:
     networks:
     - default
     - caddy_network
+    labels:
+      caddy: library.kfreitag.ca
+      caddy.reverse_proxy: "{{upstreams 6060}}"
+      # Required headers for Kobo sync
+      caddy.reverse_proxy.header_up_0: "Host {host}"
+      caddy.reverse_proxy.header_up_1: "X-Real-IP {remote_host}"
+      caddy.reverse_proxy.header_up_2: "X-Forwarded-For {header.X-Forwarded-For}"
+      caddy.reverse_proxy.header_up_3: "X-Forwarded-Host {host}"
+      caddy.reverse_proxy.header_up_4: "X-Forwarded-Proto {scheme}"
+      caddy.reverse_proxy.header_up_5: "X-Forwarded-Port {port}"
+      # Buffer settings for large Kobo sync requests
+      caddy.reverse_proxy.transport: "http"
+      caddy.reverse_proxy.transport.read_buffer: "128k"
+      caddy.reverse_proxy.transport.write_buffer: "128k"
+      caddy.reverse_proxy.transport.max_response_header: "256k"
 
   booklore-mariadb:
     image: lscr.io/linuxserver/mariadb:11.4.5
