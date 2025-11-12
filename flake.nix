@@ -166,6 +166,16 @@
           '')
         ];
 
+        # Nix garbage collection
+        nix.gc = {
+          automatic = true;
+          dates = "weekly";
+          options = "--delete-older-than 3";
+        };
+
+        # Keep only last 3 generations
+        boot.loader.systemd-boot.configurationLimit = 3;
+
         # Aliases
         environment.shellAliases = {
           rebuild = "sudo nixos-rebuild switch --impure --flake ~/config";
