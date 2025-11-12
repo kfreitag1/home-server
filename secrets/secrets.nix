@@ -10,4 +10,5 @@ in
   "admin-apps-oidc-client-secret.age".publicKeys = allKeys;
   "booklore-db-password.age".publicKeys = allKeys;
   "obsidian-livesync-db-pass.age".publicKeys = allKeys;
+  "immich-db-pass.age".publicKeys = allKeys;
 }

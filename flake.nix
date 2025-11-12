@@ -158,6 +158,7 @@
           git
           sqlite
           tmux
+          radeontop
           agenix.packages.${system}.default
           (pkgs.writeShellScriptBin "caddy-reload" ''
             caddy_container_id=$(${pkgs.docker}/bin/docker ps | ${pkgs.gnugrep}/bin/grep caddy | ${pkgs.gawk}/bin/awk '{print $1;}')

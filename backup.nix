@@ -44,6 +44,13 @@
           /mnt/storage/notes/ \
           /mnt/backup/notes/
 
+        # Backup immich directory
+        echo "Syncing /mnt/storage/immich..."
+        ${pkgs.rsync}/bin/rsync -avh --delete \
+          --info=progress2 \
+          /mnt/storage/immich/ \
+          /mnt/backup/immich/
+
         # Backup home directory
         echo "Syncing home directory..."
         ${pkgs.rsync}/bin/rsync -avh --delete \
