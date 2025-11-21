@@ -36,6 +36,9 @@ in
 {
   virtualisation.docker = {
     enable = true;
+    daemon.settings = {
+      data-root = "/mnt/cache/docker";
+    };
     autoPrune = {
       enable = true;
       dates = "weekly";
@@ -44,6 +47,12 @@ in
 
   systemd.services = lib.mkMerge (
     (map mkDockerComposeService dockerStacks) ++ [
+      {
+        docker = {
+          after = [ "mnt-cache.mount" ];
+          requires = [ "mnt-cache.mount" ];
+        };
+      }
       {
         create-caddy-network = {
           description = "Create Docker network for Caddy";

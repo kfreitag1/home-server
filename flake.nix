@@ -40,6 +40,12 @@
             options = [ "defaults" "nofail" ];
           };
 
+          "/mnt/cache" = {
+            device = "/dev/disk/by-uuid/ed80a085-8429-43e2-ad5e-1e0ccdbfa508";
+            fsType = "xfs";
+            options = [ "defaults" "nofail" ];
+          };
+
           "/mnt/storage" = {
             device = "/mnt/disk*";
             fsType = "fuse.mergerfs";
@@ -86,8 +92,8 @@
               "valid users" = "kieran";
               "create mask" = "0644";
               "directory mask" = "0755";
-            }; 
-            
+            };
+
             storage = {
               "path" = "/mnt/storage/storage";
               "browseable" = "yes";
@@ -97,7 +103,7 @@
               "create mask" = "0644";
               "directory mask" = "0755";
             };
-            
+
             timemachine = {
               "path" = "/mnt/storage/timemachine";
               "browseable" = "yes";
@@ -153,6 +159,7 @@
 
         # Sys packages
         environment.systemPackages = with pkgs; [
+          xfsprogs
           mergerfs
           mergerfs-tools
           git
