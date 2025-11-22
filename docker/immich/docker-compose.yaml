@@ -30,12 +30,13 @@ services:
 
   immich-machine-learning:
     container_name: immich_machine_learning
-    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}-rocm
-    extends:
-      file: hwaccel.ml.yml
-      service: rocm
-    environment:
-      - HSA_OVERRIDE_GFX_VERSION=11.0.0
+    # image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}-rocm
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
+    # extends:
+    #   file: hwaccel.ml.yml
+    #   service: rocm
+    # environment:
+    #   - hsa_override_gfx_version=11.0.0
     volumes:
       - model-cache:/cache
       - /run/agenix/immich-db-pass:/run/secrets/immich-db-pass:ro
@@ -68,7 +69,7 @@ services:
 
 volumes:
   model-cache:
-  
+
 networks:
   caddy_network:
     external: true
