@@ -149,9 +149,6 @@
           isNormalUser = true;
           description = "Kieran Freitag";
           extraGroups = [ "networkmanager" "wheel" "docker" ];
-          packages = with pkgs; [
-            claude-code
-          ];
         };
 
         # Allow unfree packages
@@ -166,6 +163,8 @@
           sqlite
           tmux
           radeontop
+          opencode
+          wget
           agenix.packages.${system}.default
           (pkgs.writeShellScriptBin "caddy-reload" ''
             caddy_container_id=$(${pkgs.docker}/bin/docker ps | ${pkgs.gnugrep}/bin/grep caddy | ${pkgs.gawk}/bin/awk '{print $1;}')
