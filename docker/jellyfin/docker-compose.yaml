@@ -1,55 +1,44 @@
 services:
-  jellyfin:
-    image: jellyfin/jellyfin
-    container_name: jellyfin
-    user: 1000:1000
-    group_add:
-      - "303"  # render group
-      - "26"   # video group
-    devices:
-      - /dev/dri:/dev/dri
-    # ports:
-    #   - 8096:8096/tcp
-    #   - 7359:7359/udp
-    volumes:
-      - ./jellyfin/config:/config
-      # - /path/to/cache:/cache
-      - type: bind
-        source: /mnt/storage/media
-        target: /media
-        read_only: true
-      # Optional - extra fonts to be used during transcoding with subtitle burn-in
-      # - type: bind
-      #   source: /path/to/fonts
-      #   target: /usr/local/share/fonts/custom
-      #   read_only: true
-    restart: 'always'
-    labels:
-      caddy: watch.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 8096}}"
-      homepage.group: Media
-      homepage.name: Jellyfin
-      homepage.href: watch.kfreitag.ca
+    jellyfin:
+        image: jellyfin/jellyfin
+        container_name: jellyfin
+        user: 1000:1000
+        group_add:
+            - "303" # render group
+            - "26" # video group
+        devices:
+            - /dev/dri:/dev/dri
+        volumes:
+            - ./jellyfin/config:/config
+            - /mnt/cache/jellyfin-cache:/cache
+            - type: bind
+              source: /mnt/storage/media
+              target: /media
+              read_only: true
+        restart: "always"
+        labels:
+            caddy: watch.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 8096}}"
+            homepage.group: Media
+            homepage.name: Jellyfin
+            homepage.href: watch.kfreitag.ca
+        networks:
+            - caddy_network
 
-    networks:
-      - caddy_network
-    # environment:
-    #   - JELLYFIN_PublishedServerUrl=https://watch.kfreitag.ca
-
-  jellyseerr:
-    image: fallenbagel/jellyseerr:preview-OIDC
-    container_name: jellyseerr
-    environment:
-      - TZ=America/Vancouver
-    volumes:
-      - ./jellyseerr/config:/app/config
-    restart: always
-    labels:
-      caddy: request.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 5055}}"
-    networks:
-      - caddy_network
+    jellyseerr:
+        image: fallenbagel/jellyseerr:preview-OIDC
+        container_name: jellyseerr
+        environment:
+            - TZ=America/Vancouver
+        volumes:
+            - ./jellyseerr/config:/app/config
+        restart: always
+        labels:
+            caddy: request.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 5055}}"
+        networks:
+            - caddy_network
 
 networks:
-  caddy_network:
-    external: true
+    caddy_network:
+        external: true
