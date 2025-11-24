@@ -1,22 +1,22 @@
 services:
-  beaverhabits:
-    container_name: beaverhabits
-    user: 1000:1000 # User permissions of your docker or default user.
-    environment:
-      - HABITS_STORAGE=USER_DISK
-      - INDEX_HABIT_DATE_COLUMNS=5 # Customize the date columns for the index page.
-      - ENABLE_IOS_STANDALONE=true
-      - MAX_USER_COUNT=2
-    volumes:
-      - ./beaver/:/app/.user/ # Change directory to match your docker file scheme.
-    restart: always
-    image: daya0576/beaverhabits:latest
-    networks:
-      - caddy_network
-    labels:
-      caddy: habits.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 8080}}"
+    beaverhabits:
+        container_name: beaverhabits
+        user: 1000:1000
+        environment:
+            - HABITS_STORAGE=USER_DISK
+            - INDEX_HABIT_DATE_COLUMNS=5 # Customize the date columns for the index page.
+            - ENABLE_IOS_STANDALONE=true
+            - MAX_USER_COUNT=2
+        volumes:
+            - ./beaver/:/app/.user/ # Change directory to match your docker file scheme.
+        restart: always
+        image: daya0576/beaverhabits:latest
+        networks:
+            - caddy_network
+        labels:
+            caddy: habits.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 8080}}"
 
 networks:
-  caddy_network:
-    external: true
+    caddy_network:
+        external: true

@@ -1,25 +1,25 @@
 services:
-  obsidian-livesync:
-    container_name: obsidian-livesync
-    image: couchdb:latest
-    entrypoint: ["tini", "--", "/entrypoint.sh"]
-    command: ["/opt/couchdb/bin/couchdb"]
-    environment:
-      - TZ=America/Vancouver
-      - COUCHDB_USER=obsidian
-      - COUCHDB_PASSWORD_FILE=/run/secrets/obsidian-livesync-db-pass
-    volumes:
-      - ./data:/opt/couchdb/data
-      - ./etc-local.d:/opt/couchdb/etc/local.d
-      - /run/agenix/obsidian-livesync-db-pass:/run/secrets/obsidian-livesync-db-pass:ro
-      - ./entrypoint.sh:/entrypoint.sh:ro
-    restart: always
-    labels:
-      caddy: obsidian-livesync.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 5984}}"
-    networks:
-      - caddy_network
+    obsidian-livesync:
+        container_name: obsidian-livesync
+        image: couchdb:latest
+        entrypoint: ["tini", "--", "/entrypoint.sh"]
+        command: ["/opt/couchdb/bin/couchdb"]
+        environment:
+            - TZ=America/Vancouver
+            - COUCHDB_USER=obsidian
+            - COUCHDB_PASSWORD_FILE=/run/secrets/obsidian-livesync-db-pass
+        volumes:
+            - ./data:/opt/couchdb/data
+            - ./etc-local.d:/opt/couchdb/etc/local.d
+            - /run/agenix/obsidian-livesync-db-pass:/run/secrets/obsidian-livesync-db-pass:ro
+            - ./entrypoint.sh:/entrypoint.sh:ro
+        restart: always
+        labels:
+            caddy: obsidian-livesync.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 5984}}"
+        networks:
+            - caddy_network
 
 networks:
-  caddy_network:
-    external: true
+    caddy_network:
+        external: true

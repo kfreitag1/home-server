@@ -3,8 +3,8 @@
 let
   dockerRoot = "/home/kieran/config/docker";
 
-  dockerStacks = builtins.attrNames 
-    (lib.filterAttrs (name: type: type == "directory") 
+  dockerStacks = builtins.attrNames
+    (lib.filterAttrs (name: type: type == "directory")
     (builtins.readDir dockerRoot));
 
   mkDockerComposeService = stack:
@@ -23,7 +23,7 @@ let
           Type = "oneshot";
           RemainAfterExit = "yes";
           WorkingDirectory = "${dockerRoot}/${stack}";
-          # Need to change the project dir to the current dir so it doesn't try to run in 
+          # Need to change the project dir to the current dir so it doesn't try to run in
           # the nix store where the compose files are tracked
           ExecStart = "${pkgs.docker-compose}/bin/docker-compose -f ${composeFile} --project-directory . up -d";
           ExecStop = "${pkgs.docker-compose}/bin/docker-compose -f ${composeFile} --project-directory . down";

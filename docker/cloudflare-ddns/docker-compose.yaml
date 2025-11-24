@@ -1,14 +1,14 @@
 services:
-  cloudflare-ddns:
-    image: favonia/cloudflare-ddns:latest
-    network_mode: host
-    restart: always
-    read_only: true
-    cap_drop: [all]
-    security_opt: [no-new-privileges:true]
-    volumes:
-      - /run/agenix/cloudflare-api-key:/run/secrets/cloudflare-api-key:ro
-    environment:
-      - CLOUDFLARE_API_TOKEN_FILE=/run/secrets/cloudflare-api-key
-      - DOMAINS=home.kfreitag.ca
-      - PROXIED=false
+    cloudflare-ddns:
+        image: favonia/cloudflare-ddns:latest
+        network_mode: host
+        restart: always
+        read_only: true
+        cap_drop: [all]
+        security_opt: [no-new-privileges:true]
+        volumes:
+            - /run/agenix/cloudflare-api-key:/run/secrets/cloudflare-api-key:ro
+        environment:
+            - CLOUDFLARE_API_TOKEN_FILE=/run/secrets/cloudflare-api-key
+            - DOMAINS=home.kfreitag.ca
+            - PROXIED=false

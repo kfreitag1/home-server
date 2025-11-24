@@ -2,11 +2,11 @@
 
 let
   secretsConfig = import ./secrets/secrets.nix;
-  
-  secretNames = lib.mapAttrsToList (name: _: 
+
+  secretNames = lib.mapAttrsToList (name: _:
     lib.removeSuffix ".age" name
   ) secretsConfig;
-  
+
   mkSecret = name: {
     file = ./secrets/${name}.age;
     mode = "444";

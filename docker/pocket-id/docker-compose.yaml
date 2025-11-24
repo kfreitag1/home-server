@@ -1,33 +1,32 @@
 services:
-  pocket-id:
-    container_name: pocket-id
-    image: ghcr.io/pocket-id/pocket-id:v1
-    restart: always
-    volumes:
-      - "./data:/app/data"
-      - /run/agenix/maxmind-license-key:/run/secrets/maxmind-license-key:ro
-    environment:
-      - APP_URL=https://id.kfreitag.ca
-      - TRUST_PROXY=true
-      - PUID=1000
-      - PGID=1000
-      - MAXMIND_LICENCE_KEY_FILE=/run/secrets/maxmind-license-key
-      - APP_NAME=Rhodhouse ID
-      - SESSION_DURATION=2880 # 2 days
-      - ACCENT_COLOR=#A2B6A1
-    # Optional healthcheck
-    healthcheck:
-      test: [ "CMD", "/app/pocket-id", "healthcheck" ]
-      interval: 1m30s
-      timeout: 5s
-      retries: 2
-      start_period: 10s
-    networks: 
-      - caddy_network
-    labels:
-      caddy: id.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 1411}}"
+    pocket-id:
+        container_name: pocket-id
+        image: ghcr.io/pocket-id/pocket-id:v1
+        restart: always
+        volumes:
+            - "./data:/app/data"
+            - /run/agenix/maxmind-license-key:/run/secrets/maxmind-license-key:ro
+        environment:
+            - APP_URL=https://id.kfreitag.ca
+            - TRUST_PROXY=true
+            - PUID=1000
+            - PGID=1000
+            - MAXMIND_LICENCE_KEY_FILE=/run/secrets/maxmind-license-key
+            - APP_NAME=Rhodhouse ID
+            - SESSION_DURATION=2880 # 2 days
+            - ACCENT_COLOR=#A2B6A1
+        healthcheck:
+            test: ["CMD", "/app/pocket-id", "healthcheck"]
+            interval: 1m30s
+            timeout: 5s
+            retries: 2
+            start_period: 10s
+        networks:
+            - caddy_network
+        labels:
+            caddy: id.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 1411}}"
 
 networks:
-  caddy_network:
-    external: true
+    caddy_network:
+        external: true

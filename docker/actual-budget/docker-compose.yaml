@@ -1,34 +1,34 @@
 services:
-  actual_server:
-    container_name: actual-budget
-    image: docker.io/actualbudget/actual-server:latest
-    environment:
-      - ACTUAL_OPENID_DISCOVERY_URL=https://id.kfreitag.ca/.well-known/openid-configuration
-      - ACTUAL_OPENID_SERVER_HOSTNAME=https://budget.kfreitag.ca
-      - ACTUAL_OPENID_CLIENT_ID=dd881c69-e907-4e5e-860b-62e1dea09b92
-      - ACTUAL_OPENID_ENFORCE=true
-      - ACTUAL_LOGIN_METHOD=openid
-      - ACTUAL_ALLOWED_LOGIN_METHODS=openid
-    volumes:
-      - ./data:/data
-      - /run/agenix/actual-budget-oidc-client-secret:/run/secrets/actual-budget-oidc-client-secret:ro
-    healthcheck:
-      test: ['CMD-SHELL', 'node src/scripts/health-check.js']
-      interval: 60s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-    restart: always
-    networks: 
-      - caddy_network
-    command: >
-        sh -c '
-        export ACTUAL_OPENID_CLIENT_SECRET=$$(cat /run/secrets/actual-budget-oidc-client-secret)
-        && exec node app.js
-        '
-    labels:
-      caddy: budget.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 5006}}"
+    actual_server:
+        container_name: actual-budget
+        image: docker.io/actualbudget/actual-server:latest
+        environment:
+            - ACTUAL_OPENID_DISCOVERY_URL=https://id.kfreitag.ca/.well-known/openid-configuration
+            - ACTUAL_OPENID_SERVER_HOSTNAME=https://budget.kfreitag.ca
+            - ACTUAL_OPENID_CLIENT_ID=dd881c69-e907-4e5e-860b-62e1dea09b92
+            - ACTUAL_OPENID_ENFORCE=true
+            - ACTUAL_LOGIN_METHOD=openid
+            - ACTUAL_ALLOWED_LOGIN_METHODS=openid
+        volumes:
+            - ./data:/data
+            - /run/agenix/actual-budget-oidc-client-secret:/run/secrets/actual-budget-oidc-client-secret:ro
+        healthcheck:
+            test: ["CMD-SHELL", "node src/scripts/health-check.js"]
+            interval: 60s
+            timeout: 10s
+            retries: 3
+            start_period: 20s
+        restart: always
+        networks:
+            - caddy_network
+        command: >
+            sh -c '
+            export ACTUAL_OPENID_CLIENT_SECRET=$$(cat /run/secrets/actual-budget-oidc-client-secret)
+            && exec node app.js
+            '
+        labels:
+            caddy: budget.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 5006}}"
 networks:
-  caddy_network:
-    external: true
+    caddy_network:
+        external: true

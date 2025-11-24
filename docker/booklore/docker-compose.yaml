@@ -1,63 +1,62 @@
 services:
-  booklore:
-    image: booklore/booklore:latest
-    container_name: booklore
-    environment:
-      - TZ=America/Vancouver
-      - DATABASE_URL=jdbc:mariadb://booklore-mariadb:3306/booklore
-      - DATABASE_USERNAME=booklore
-      - BOOKLORE_PORT=6060
-    entrypoint: ["/entrypoint.sh"]
-    command: ["/start.sh"]
-    depends_on:
-      booklore-mariadb:
-        condition: service_healthy
-    volumes:
-      - ./data:/app/data
-      - /mnt/storage/media/bookdrop:/bookdrop
-      - /mnt/storage/media/books:/books
-      - /run/agenix/booklore-db-password:/run/secrets/booklore-db-password:ro
-      - ./entrypoint.sh:/entrypoint.sh:ro
-    restart: always
-    networks:
-    - default
-    - caddy_network
-    labels:
-      caddy: library.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 6060}}"
-      # Required headers for Kobo sync
-      caddy.reverse_proxy.header_up_0: "Host {host}"
-      caddy.reverse_proxy.header_up_1: "X-Real-IP {remote_host}"
-      caddy.reverse_proxy.header_up_2: "X-Forwarded-For {header.X-Forwarded-For}"
-      caddy.reverse_proxy.header_up_3: "X-Forwarded-Host {host}"
-      caddy.reverse_proxy.header_up_4: "X-Forwarded-Proto {scheme}"
-      caddy.reverse_proxy.header_up_5: "X-Forwarded-Port {port}"
-      # Buffer settings for large Kobo sync requests
-      caddy.reverse_proxy.transport: "http"
-      caddy.reverse_proxy.transport.read_buffer: "128k"
-      caddy.reverse_proxy.transport.write_buffer: "128k"
-      caddy.reverse_proxy.transport.max_response_header: "256k"
+    booklore:
+        image: booklore/booklore:latest
+        container_name: booklore
+        environment:
+            - TZ=America/Vancouver
+            - DATABASE_URL=jdbc:mariadb://booklore-mariadb:3306/booklore
+            - DATABASE_USERNAME=booklore
+            - BOOKLORE_PORT=6060
+        entrypoint: ["/entrypoint.sh"]
+        command: ["/start.sh"]
+        depends_on:
+            booklore-mariadb:
+                condition: service_healthy
+        volumes:
+            - ./data:/app/data
+            - /mnt/storage/media/bookdrop:/bookdrop
+            - /mnt/storage/media/books:/books
+            - /run/agenix/booklore-db-password:/run/secrets/booklore-db-password:ro
+            - ./entrypoint.sh:/entrypoint.sh:ro
+        restart: always
+        networks:
+            - default
+            - caddy_network
+        labels:
+            caddy: library.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 6060}}"
+            # Required headers for Kobo sync
+            caddy.reverse_proxy.header_up_0: "Host {host}"
+            caddy.reverse_proxy.header_up_1: "X-Real-IP {remote_host}"
+            caddy.reverse_proxy.header_up_2: "X-Forwarded-For {header.X-Forwarded-For}"
+            caddy.reverse_proxy.header_up_3: "X-Forwarded-Host {host}"
+            caddy.reverse_proxy.header_up_4: "X-Forwarded-Proto {scheme}"
+            caddy.reverse_proxy.header_up_5: "X-Forwarded-Port {port}"
+            # Buffer settings for large Kobo sync requests
+            caddy.reverse_proxy.transport: "http"
+            caddy.reverse_proxy.transport.read_buffer: "128k"
+            caddy.reverse_proxy.transport.write_buffer: "128k"
+            caddy.reverse_proxy.transport.max_response_header: "256k"
 
-  booklore-mariadb:
-    image: lscr.io/linuxserver/mariadb:11.4.5
-    container_name: booklore-mariadb
-    environment:
-      - TZ=America/Vancouver
-      - FILE__MYSQL_ROOT_PASSWORD=/run/secrets/booklore-db-password
-      - MYSQL_DATABASE=booklore
-      - MYSQL_USER=booklore
-      - FILE__MYSQL_PASSWORD=/run/secrets/booklore-db-password
-    volumes:
-      - ./mariadb/config:/config
-      - /run/agenix/booklore-db-password:/run/secrets/booklore-db-password:ro
-    restart: always
-    healthcheck:
-      test: [ "CMD", "mariadb-admin", "ping", "-h", "localhost" ]
-      interval: 5s
-      timeout: 5s
-      retries: 10
+    booklore-mariadb:
+        image: lscr.io/linuxserver/mariadb:11.4.5
+        container_name: booklore-mariadb
+        environment:
+            - TZ=America/Vancouver
+            - FILE__MYSQL_ROOT_PASSWORD=/run/secrets/booklore-db-password
+            - MYSQL_DATABASE=booklore
+            - MYSQL_USER=booklore
+            - FILE__MYSQL_PASSWORD=/run/secrets/booklore-db-password
+        volumes:
+            - ./mariadb/config:/config
+            - /run/agenix/booklore-db-password:/run/secrets/booklore-db-password:ro
+        restart: always
+        healthcheck:
+            test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
 
 networks:
-  caddy_network:
-    external: true
-
+    caddy_network:
+        external: true

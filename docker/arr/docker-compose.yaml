@@ -1,140 +1,111 @@
 services:
-  sonarr:
-    image: lscr.io/linuxserver/sonarr:latest
-    container_name: sonarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Vancouver
-    volumes:
-      - ./sonarr/config:/config
-      - /mnt/storage/media:/media
-    restart: always
-    labels:
-      caddy: sonarr.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 8989}}"
-      caddy.import: tinyauth_forwarder *
-    networks:
-      - caddy_network
+    sonarr:
+        image: lscr.io/linuxserver/sonarr:latest
+        container_name: sonarr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Vancouver
+        volumes:
+            - ./sonarr/config:/config
+            - /mnt/storage/media:/media
+        restart: always
+        labels:
+            caddy: sonarr.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 8989}}"
+            caddy.import: tinyauth_forwarder *
+        networks:
+            - caddy_network
 
-  prowlarr:
-    image: lscr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Vancouver
-    volumes:
-      - ./prowlarr/config:/config
-    restart: always
-    labels:
-      caddy: prowlarr.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 9696}}"
-      caddy.import: tinyauth_forwarder *
-    networks:
-      - caddy_network
+    prowlarr:
+        image: lscr.io/linuxserver/prowlarr:latest
+        container_name: prowlarr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Vancouver
+        volumes:
+            - ./prowlarr/config:/config
+        restart: always
+        labels:
+            caddy: prowlarr.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 9696}}"
+            caddy.import: tinyauth_forwarder *
+        networks:
+            - caddy_network
 
-  radarr:
-    image: lscr.io/linuxserver/radarr:latest
-    container_name: radarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Vancouver
-    volumes:
-      - ./radarr/config:/config
-      - /mnt/storage/media:/media
-    restart: always
-    labels:
-      caddy: radarr.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 7878}}"
-      caddy.import: tinyauth_forwarder *
-    networks:
-      - caddy_network
+    radarr:
+        image: lscr.io/linuxserver/radarr:latest
+        container_name: radarr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Vancouver
+        volumes:
+            - ./radarr/config:/config
+            - /mnt/storage/media:/media
+        restart: always
+        labels:
+            caddy: radarr.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 7878}}"
+            caddy.import: tinyauth_forwarder *
+        networks:
+            - caddy_network
 
-  lidarr:
-    image: lscr.io/linuxserver/lidarr:latest
-    container_name: lidarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Vancouver
-    volumes:
-      - ./lidarr/config:/config
-      - /mnt/storage/media:/media
-    restart: always
-    labels:
-      caddy: lidarr.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 8686}}"
-      caddy.import: tinyauth_forwarder *
-    networks:
-      - caddy_network
+    lidarr:
+        image: lscr.io/linuxserver/lidarr:latest
+        container_name: lidarr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Vancouver
+        volumes:
+            - ./lidarr/config:/config
+            - /mnt/storage/media:/media
+        restart: always
+        labels:
+            caddy: lidarr.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 8686}}"
+            caddy.import: tinyauth_forwarder *
+        networks:
+            - caddy_network
 
-  # jellyseerr:
-  #   image: ghcr.io/fallenbagel/jellyseerr:latest
-  #   container_name: jellyseerr
-  #   environment:
-  #     - TZ=America/Vancouver
-  #   volumes:
-  #     - ./jellyseerr/config:/app/config
-  #   restart: always
-  #   labels:
-  #     caddy: requests.kfreitag.ca
-  #     caddy.reverse_proxy: "{{upstreams 5055}}"
-  #     caddy.import: tinyauth_forwarder *
-  #   networks:
-  #     - caddy_network
+    bazarr:
+        image: lscr.io/linuxserver/bazarr:latest
+        container_name: bazarr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Vancouver
+        volumes:
+            - ./bazarr/config:/config
+            - /mnt/storage/media:/media
+        restart: always
+        labels:
+            caddy: bazarr.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 6767}}"
+            caddy.import: tinyauth_forwarder *
+        networks:
+            - caddy_network
 
-
-    # image: sctx/overseerr:latest
-    # container_name: overseerr
-    # network_mode: "service:gluetun"
-    # environment:
-    # - LOG_LEVEL=debug
-    # - TZ=Europe/Oslo
-    # volumes:
-    # - /volume1/docker/arr-stack/overseer/config:/app/config
-    # depends_on:
-    # gluetun:
-    # condition: service_healthy
-    # restart: unless-stopped
-
-  bazarr:
-    image: lscr.io/linuxserver/bazarr:latest
-    container_name: bazarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Vancouver
-    volumes:
-      - ./bazarr/config:/config
-      - /mnt/storage/media:/media
-    restart: always
-    labels:
-      caddy: bazarr.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 6767}}"
-      caddy.import: tinyauth_forwarder *
-    networks:
-      - caddy_network
-
-  sabnzbd:
-    image: lscr.io/linuxserver/sabnzbd:latest
-    container_name: sabnzbd
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Vancouver
-    volumes:
-      - ./sabnzbd/config:/config
-      - /mnt/storage/media:/media
-    restart: always
-    labels:
-      caddy: sabnzbd.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 8080}}"
-      caddy.import: tinyauth_forwarder *
-    networks:
-      - caddy_network
+    sabnzbd:
+        image: lscr.io/linuxserver/sabnzbd:latest
+        container_name: sabnzbd
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Vancouver
+        volumes:
+            - ./sabnzbd/config:/config
+            - /mnt/storage/media:/media
+        restart: always
+        labels:
+            caddy: sabnzbd.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 8080}}"
+            caddy.import: tinyauth_forwarder *
+        networks:
+            - caddy_network
 
 networks:
-  caddy_network:
-    external: true
+    caddy_network:
+        external: true

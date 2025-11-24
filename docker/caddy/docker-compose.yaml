@@ -1,51 +1,50 @@
 services:
-  caddy:
-    container_name: caddy
-    image: lucaslorentz/caddy-docker-proxy:latest
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
-    volumes:
-      # - ./conf:/etc/caddy
-      - ./data:/data
-      - ./config:/config
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    environment:
-      - CADDY_INGRESS_NETWORKS=caddy_network
-      - ACME_AGREE=true
-    labels:
-      caddy.email: kfreitag@kieran.ca
-      caddy_0: (tinyauth_forwarder)
-      caddy_0.forward_auth: tinyauth:3000
-      caddy_0.forward_auth.uri: /api/auth/caddy
-    networks:
-      - caddy_network
+    caddy:
+        container_name: caddy
+        image: lucaslorentz/caddy-docker-proxy:latest
+        restart: always
+        ports:
+            - "80:80"
+            - "443:443"
+            - "443:443/udp"
+        volumes:
+            - ./data:/data
+            - ./config:/config
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+        environment:
+            - CADDY_INGRESS_NETWORKS=caddy_network
+            - ACME_AGREE=true
+        labels:
+            caddy.email: kfreitag@kieran.ca
+            caddy_0: (tinyauth_forwarder)
+            caddy_0.forward_auth: tinyauth:3000
+            caddy_0.forward_auth.uri: /api/auth/caddy
+        networks:
+            - caddy_network
 
-  tinyauth:
-    container_name: tinyauth
-    image: ghcr.io/steveiliop56/tinyauth:v4
-    restart: unless-stopped
-    environment:
-      - APP_URL=https://auth.kfreitag.ca
-      - PROVIDERS_POCKETID_CLIENT_ID=bac2503d-7cc1-4f87-9985-20a3bff67eb1
-      - PROVIDERS_POCKETID_CLIENT_SECRET_FILE=/run/secrets/admin-apps-oidc-client-secret
-      - PROVIDERS_POCKETID_AUTH_URL=https://id.kfreitag.ca/authorize
-      - PROVIDERS_POCKETID_TOKEN_URL=https://id.kfreitag.ca/api/oidc/token
-      - PROVIDERS_POCKETID_USER_INFO_URL=https://id.kfreitag.ca/api/oidc/userinfo
-      - PROVIDERS_POCKETID_REDIRECT_URL=https://auth.kfreitag.ca/api/oauth/callback/pocketid
-      - PROVIDERS_POCKETID_SCOPES=openid email profile groups
-      - PROVIDERS_POCKETID_NAME=RhodhouseID
-      - OAUTH_AUTO_REDIRECT=pocketid
-    volumes:
-      - /run/agenix/admin-apps-oidc-client-secret:/run/secrets/admin-apps-oidc-client-secret:ro
-    networks:
-      - caddy_network
-    labels:
-      caddy: auth.kfreitag.ca
-      caddy.reverse_proxy: "{{upstreams 3000}}"
+    tinyauth:
+        container_name: tinyauth
+        image: ghcr.io/steveiliop56/tinyauth:v4
+        restart: unless-stopped
+        environment:
+            - APP_URL=https://auth.kfreitag.ca
+            - PROVIDERS_POCKETID_CLIENT_ID=bac2503d-7cc1-4f87-9985-20a3bff67eb1
+            - PROVIDERS_POCKETID_CLIENT_SECRET_FILE=/run/secrets/admin-apps-oidc-client-secret
+            - PROVIDERS_POCKETID_AUTH_URL=https://id.kfreitag.ca/authorize
+            - PROVIDERS_POCKETID_TOKEN_URL=https://id.kfreitag.ca/api/oidc/token
+            - PROVIDERS_POCKETID_USER_INFO_URL=https://id.kfreitag.ca/api/oidc/userinfo
+            - PROVIDERS_POCKETID_REDIRECT_URL=https://auth.kfreitag.ca/api/oauth/callback/pocketid
+            - PROVIDERS_POCKETID_SCOPES=openid email profile groups
+            - PROVIDERS_POCKETID_NAME=RhodhouseID
+            - OAUTH_AUTO_REDIRECT=pocketid
+        volumes:
+            - /run/agenix/admin-apps-oidc-client-secret:/run/secrets/admin-apps-oidc-client-secret:ro
+        networks:
+            - caddy_network
+        labels:
+            caddy: auth.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 3000}}"
 
 networks:
-  caddy_network:
-    external: true
+    caddy_network:
+        external: true
