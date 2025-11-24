@@ -11,6 +11,7 @@ services:
         volumes:
             - ./jellyfin/config:/config
             - /mnt/cache/jellyfin-cache:/cache
+            - /mnt/cache/jellyfin-library:/config/metadata/library
             - type: bind
               source: /mnt/storage/media
               target: /media
