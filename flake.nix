@@ -164,6 +164,7 @@
           tmux
           radeontop
           opencode
+          gemini-cli
           wget
           agenix.packages.${system}.default
           (pkgs.writeShellScriptBin "caddy-reload" ''
