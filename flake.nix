@@ -165,6 +165,7 @@
           radeontop
           opencode
           gemini-cli
+          claude-code
           wget
           agenix.packages.${system}.default
           (pkgs.writeShellScriptBin "caddy-reload" ''
