@@ -187,6 +187,7 @@
         # Aliases
         environment.shellAliases = {
           rebuild = "sudo nixos-rebuild switch --impure --flake ~/config";
+          update = "nix flake --extra-experimental-features \"nix-command flakes\" update --flake ~/config/flake.nix";
         };
 
         # Services

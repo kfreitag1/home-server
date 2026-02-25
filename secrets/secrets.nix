@@ -11,4 +11,6 @@ in
   "booklore-db-password.age".publicKeys = allKeys;
   "obsidian-livesync-db-pass.age".publicKeys = allKeys;
   "immich-db-pass.age".publicKeys = allKeys;
+  "simple-gym-pass.age".publicKeys = allKeys;
+  "simple-gym-oidc-client-secret.age".publicKeys = allKeys;
 }

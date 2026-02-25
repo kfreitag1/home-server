@@ -1,0 +1,79 @@
+services:
+    postgres:
+        image: postgres:17
+        command: >
+            postgres
+            -c wal_level=logical
+            -c max_replication_slots=10
+            -c max_wal_senders=10
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB:-simple_gym}
+            POSTGRES_USER: ${POSTGRES_USER:-gym}
+            POSTGRES_PASSWORD_FILE: /run/secrets/db-password
+        volumes:
+            - ./data:/var/lib/postgresql/data
+            - ${DB_PASSWORD_FILE:?required}:/run/secrets/db-password:ro
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gym} -d ${POSTGRES_DB:-simple_gym}"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+
+    zero-cache:
+        image: rocicorp/zero:latest
+        entrypoint: /bin/sh
+        command:
+            - -c
+            - |
+                export ZERO_ADMIN_PASSWORD="$$(cat /run/secrets/zero-admin-password)"
+                export ZERO_UPSTREAM_DB="postgresql://${POSTGRES_USER:-gym}:$$(cat /run/secrets/db-password)@postgres:5432/${POSTGRES_DB:-simple_gym}"
+                exec npx zero-cache
+        environment:
+            ZERO_QUERY_URL: http://app:3000/api/zero/query
+            ZERO_MUTATE_URL: http://app:3000/api/zero/mutate
+            ZERO_QUERY_FORWARD_COOKIES: "true"
+            ZERO_MUTATE_FORWARD_COOKIES: "true"
+        volumes:
+            - ${DB_PASSWORD_FILE:?required}:/run/secrets/db-password:ro
+            - ${ZERO_ADMIN_PASSWORD_FILE:?required}:/run/secrets/zero-admin-password:ro
+        depends_on:
+            postgres:
+                condition: service_healthy
+        restart: always
+        networks: [default, caddy_network]
+        labels:
+            caddy: ${ZERO_DOMAIN:?required}
+            caddy.reverse_proxy: "{{upstreams 4848}}"
+
+    app:
+        image: simple-gym:latest
+        depends_on:
+            postgres:
+                condition: service_healthy
+        restart: always
+        networks: [default, caddy_network]
+        environment:
+            DATABASE_PASSWORD_FILE: /run/secrets/db-password
+            DATABASE_HOST: postgres
+            DATABASE_USER: ${POSTGRES_USER:-gym}
+            DATABASE_NAME: ${POSTGRES_DB:-simple_gym}
+            BETTER_AUTH_SECRET_FILE: /run/secrets/auth-secret
+            BETTER_AUTH_URL: ${BETTER_AUTH_URL:?required}
+            ZERO_PUBLIC_URL: ${ZERO_PUBLIC_URL:?required}
+            COOKIE_DOMAIN: ${COOKIE_DOMAIN:-}
+            OIDC_1_NAME: ${OIDC_1_NAME:-}
+            OIDC_1_CLIENT_ID: ${OIDC_1_CLIENT_ID:-}
+            OIDC_1_CLIENT_SECRET_FILE: /run/secrets/oidc-client-secret
+            OIDC_1_DISCOVERY_URL: ${OIDC_1_DISCOVERY_URL:-}
+        volumes:
+            - ${DB_PASSWORD_FILE:?required}:/run/secrets/db-password:ro
+            - ${AUTH_SECRET_FILE:?required}:/run/secrets/auth-secret:ro
+            - ${OIDC_CLIENT_SECRET_FILE:-/dev/null}:/run/secrets/oidc-client-secret:ro
+        labels:
+            caddy: ${APP_DOMAIN:?required}
+            caddy.reverse_proxy: "{{upstreams 3000}}"
+
+networks:
+    caddy_network:
+        external: true
