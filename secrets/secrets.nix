@@ -13,4 +13,5 @@ in
   "immich-db-pass.age".publicKeys = allKeys;
   "simple-gym-pass.age".publicKeys = allKeys;
   "simple-gym-oidc-client-secret.age".publicKeys = allKeys;
+  "paperless-oidc-client-secret.age".publicKeys = allKeys;
 }

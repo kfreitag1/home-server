@@ -1,0 +1,75 @@
+services:
+    broker:
+        image: docker.io/library/redis:8
+        restart: always
+        volumes:
+            - ./redis:/data
+    gotenberg:
+        image: docker.io/gotenberg/gotenberg:8.25
+        restart: always
+        # The gotenberg chromium route is used to convert .eml files. We do not
+        # want to allow external content like tracking pixels or even javascript.
+        command:
+            - "gotenberg"
+            - "--chromium-disable-javascript=true"
+            - "--chromium-allow-list=file:///tmp/.*"
+    tika:
+        image: docker.io/apache/tika:latest
+        restart: always
+    webserver:
+        image: ghcr.io/paperless-ngx/paperless-ngx:latest
+        restart: always
+        depends_on:
+            - broker
+        volumes:
+            - ./data:/usr/src/paperless/data
+            - ./media:/usr/src/paperless/media
+            - ./export:/usr/src/paperless/export
+            - ./consume:/usr/src/paperless/consume
+            - /run/agenix/paperless-oidc-client-secret:/run/secrets/paperless-oidc-client-secret:ro
+        entrypoint: >
+            sh -c '
+            SECRET=$$(cat /run/secrets/paperless-oidc-client-secret)
+            && export PAPERLESS_SOCIALACCOUNT_PROVIDERS=$$(echo "$$PAPERLESS_SOCIALACCOUNT_PROVIDERS" | sed "s|<client_secret>|$$SECRET|")
+            && exec /init
+            '
+        environment:
+            PAPERLESS_URL: https://docs.kfreitag.ca
+            PAPERLESS_SECRET_KEY_FILE: /run/secrets/paperless-oidc-client-secret
+            PAPERLESS_TIME_ZONE: America/Vancouver
+            PAPERLESS_REDIS: redis://broker:6379
+            PAPERLESS_TIKA_ENABLED: 1
+            PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
+            PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+            PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+            PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
+                {
+                  "openid_connect": {
+                    "OAUTH_PKCE_ENABLED": true,
+                    "APPS": [
+                      {
+                        "provider_id": "pocketid",
+                        "name": "Rhodhouse ID",
+                        "client_id": "5a644257-9535-41b8-8781-8ea63315ee8c",
+                        "secret": "<client_secret>",
+                        "settings": {
+                          "server_url": "https://id.kfreitag.ca/.well-known/openid-configuration"
+                        }
+                      }
+                    ],
+                    "SCOPE": ["openid", "profile", "email"]
+                  }
+                }
+
+            PAPERLESS_SOCIAL_AUTO_SIGNUP: true
+            PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: true
+        labels:
+            caddy: docs.kfreitag.ca
+            caddy.reverse_proxy: "{{upstreams 8000}}"
+        networks:
+            - default
+            - caddy_network
+
+networks:
+    caddy_network:
+        external: true
