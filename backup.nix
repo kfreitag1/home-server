@@ -30,6 +30,13 @@
           /mnt/storage/storage/ \
           /mnt/backup/storage/
 
+        # Backup docs directory
+        echo "Syncing /mnt/storage/docs..."
+        ${pkgs.rsync}/bin/rsync -avh --delete \
+          --info=progress2 \
+          /mnt/storage/docs/ \
+          /mnt/backup/docs/
+
         # Backup timemachine directory
         echo "Syncing /mnt/storage/timemachine..."
         ${pkgs.rsync}/bin/rsync -avh --delete \

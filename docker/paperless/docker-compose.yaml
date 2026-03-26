@@ -23,7 +23,7 @@ services:
             - broker
         volumes:
             - ./data:/usr/src/paperless/data
-            - ./media:/usr/src/paperless/media
+            - /mnt/storage/docs:/usr/src/paperless/media
             - ./export:/usr/src/paperless/export
             - ./consume:/usr/src/paperless/consume
             - /run/agenix/paperless-oidc-client-secret:/run/secrets/paperless-oidc-client-secret:ro
