@@ -8,9 +8,9 @@ services:
             - /mnt/storage:/mnt/storage:ro
             - /var/run/docker.sock:/var/run/docker.sock
         environment:
-            HOMEPAGE_ALLOWED_HOSTS: home.kfreitag.ca
+            HOMEPAGE_ALLOWED_HOSTS: dash.kfreitag.ca
         labels:
-            caddy: home.kfreitag.ca
+            caddy: dash.kfreitag.ca
             caddy.reverse_proxy: "{{upstreams 3000}}"
             caddy.import: tinyauth_forwarder *
         networks:
